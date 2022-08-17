@@ -58,11 +58,12 @@ class NeoScraper():
                 all_ps5 = store.find_all(class_='product-offer-details__others-list__item__container')
                 for ps5 in all_ps5:
                     name = ps5.find(class_='product-offer-details__others-list__item__title').text.strip().split('>>')
-                    price = ps5.find(class_='product-offer-details__others-list__item__price').text.strip()
+                    price = ps5.find(class_='product-offer-details__others-list__item__price').text.strip().split(',')
+
 
                     ps5_obj = {
                         'name': name[0],
-                        'price': price,
+                        'price': price[0],
                         'link': 'копіюйте назву і вставляйте в гугл'
                     }
 
