@@ -38,7 +38,11 @@ class MediaMarktScraper():
                  'link': link,
                  'price': price
              }
-            self.lst_obj.append(ps5_obj)
+
+            if ps5_obj in self.lst_obj:
+                continue
+            else:
+                self.lst_obj.append(ps5_obj)
 
     def get_data(self):
         return self.lst_obj

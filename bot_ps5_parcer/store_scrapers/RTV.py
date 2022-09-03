@@ -23,8 +23,13 @@ class RTVScraper():
         for ps5 in row_ps5:
              ps5_name = ps5.find(class_='product-name').text.strip()
              ps5_link = 'www.euro.com.pl' + ps5.find(class_='js-save-keyword').get('href')
-             ps5_price = ps5.find(class_='price-normal selenium-price-normal').text.strip().split()
-             ps5_price = ps5_price[0] + " " + ps5_price[1]
+             ps5_price = ps5.find(class_='price-normal selenium-price-normal')
+             if ps5_price != None:
+                 ps5_price = ps5_price.text.strip().split()
+                 ps5_price = ps5_price[0] + " " + ps5_price[1]
+             else:
+                continue
+
 
              ps5_obj = {
                  'name': ps5_name,

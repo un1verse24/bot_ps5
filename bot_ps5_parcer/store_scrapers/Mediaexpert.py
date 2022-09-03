@@ -4,13 +4,22 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
+from webdriver_manager.chrome import ChromeDriverManager
 
 
 class MediaExpertScraper():
-    lst_ps5 = []
-    headers = {
-         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36'
-     }
+
+    def __init__(self):
+        self.lst_ps5 = []
+        self.options = Options()
+        self.options.add_argument(
+            'user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36')
+        self.options.add_argument('--headless')
+        self.options.add_argument('--no-sandbox')
+        self.headers = {
+             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36'
+         }
     def fetch(self, url):
         return requests.get(url, headers=self.headers)
 
@@ -18,42 +27,46 @@ class MediaExpertScraper():
 
 
     def found_last_page(self, url):
-        driver = webdriver.Chrome(service=ChromeService(
-            executable_path='/Users/rostislavohrim/Desktop/Навчання IT/just_studing/chrome_driver/chromedriver'))
-        driver.get(url)
+        driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=self.options)
 
         a = ActionChains(driver)
         a.scroll_by_amount(0, 1000)
         a.perform()
         soup = BeautifulSoup(driver.page_source, 'lxml')
-        return int(soup.find(class_='from').text.split()[1])
+        try:
+            return int(soup.find(class_='from').text.split()[1])
+        except:
+            return 1
 
     def search_ps5(self):
-        driver = webdriver.Chrome(service=ChromeService(executable_path='/Users/rostislavohrim/Desktop/Навчання IT/just_studing/chrome_driver/chromedriver'))
+        driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=self.options)
         for page in range(1, self.found_last_page('https://www.mediaexpert.pl/gaming/playstation-5/konsole-ps5') + 1):
             driver.get(f'https://www.mediaexpert.pl/gaming/playstation-5/konsole-ps5?page={page}')
-            end_of_page = driver.find_element(By.XPATH, '//*[@id="section_list-pagination"]/div/span/small')
-            a = ActionChains(driver)
-            a.move_to_element(end_of_page)
-            a.perform()
-            soup = BeautifulSoup(driver.page_source, 'lxml')
-            all_items = soup.find_all(class_='offer-box')
-            flag = True
-            if flag == False:
-                break
-            for item in all_items:
-                if item.find(class_='main-price') != None:
-                    name = item.find('h2', class_='name').text.strip()
-                    price = item.find(class_='main-price').text.split()
-                    link = 'https://www.mediaexpert.pl/' + item.find('h2', class_='name').find('a').get('href')
+            try:
+                end_of_page = driver.find_element(By.XPATH, '//*[@id="section_list-pagination"]/div/span/small')
+                a = ActionChains(driver)
+                a.move_to_element(end_of_page)
+                a.perform()
+                soup = BeautifulSoup(driver.page_source, 'lxml')
+                all_items = soup.find_all(class_='offer-box')
+                flag = True
+                if flag == False:
+                    break
+                for item in all_items:
+                    if item.find(class_='main-price') != None:
+                        name = item.find('h2', class_='name').text.strip()
+                        price = item.find(class_='main-price').text.split()
+                        link = 'https://www.mediaexpert.pl/' + item.find('h2', class_='name').find('a').get('href')
 
-                    obj = {
-                        'name': name,
-                        'price': price[0] + ' ' + price[1],
-                        'link': link
-                    }
+                        obj = {
+                            'name': name,
+                            'price': price[0] + ' ' + price[1],
+                            'link': link
+                        }
 
-                    self.lst_ps5.append(obj)
+                        self.lst_ps5.append(obj)
+            except Exception:
+                self.lst_ps5 = []
 
     def get_data(self):
         return self.lst_ps5

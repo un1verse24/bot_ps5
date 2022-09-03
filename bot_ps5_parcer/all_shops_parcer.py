@@ -6,6 +6,7 @@ from bot_ps5_parcer.store_scrapers.x_com import XComScraper
 from bot_ps5_parcer.store_scrapers.al_to import AlToScraper
 from bot_ps5_parcer.store_scrapers.neonet_through_ceneo import NeoScraper
 from bot_ps5_parcer.store_scrapers.Mediaexpert import MediaExpertScraper
+from bot_ps5_parcer.store_scrapers.Empik import EmpikScraper
 
 
 class AllShopsScraper:
@@ -20,8 +21,9 @@ class AllShopsScraper:
         self.scraper_alto = AlToScraper()
         self.scraper_neonet = NeoScraper()
         self.scraper_mediaexpert = MediaExpertScraper()
+        self.scraper_empik = EmpikScraper()
 
-        self.scrapers_list = [self.scraper_mediamarkt, self.scraper_rtv, self.scraper_xcom, self.scraper_alto, self.scraper_avans, self.scraper_electro, self.scraper_neonet, self.scraper_mediaexpert]
+        self.scrapers_list = [self.scraper_mediamarkt, self.scraper_rtv, self.scraper_xcom, self.scraper_alto, self.scraper_avans, self.scraper_electro, self.scraper_neonet, self.scraper_mediaexpert, self.scraper_empik]
 
         # self.scraper_avans,
         # self.scraper_electro,
@@ -52,6 +54,7 @@ class AllShopsScraper:
         self.scraper_neonet.search_ps5('https://www.ceneo.pl/96861968')
 
         self.scraper_mediaexpert.search_ps5()
+        self.scraper_empik.search_ps5('https://www.empik.com/gry-i-programy/playstation-5/konsole,342803,s?qtype=facetForm')
 
 
     def get_data(self):

@@ -1,24 +1,34 @@
 import requests
 from bs4 import BeautifulSoup
 from selenium import webdriver
-from selenium.webdriver.common.by import By
+# from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service as ChromeService
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver import ActionChains
+# from selenium.webdriver.support.ui import WebDriverWait
+# from selenium.webdriver.support import expected_conditions as EC
+# from selenium.webdriver import ActionChains
+from selenium.webdriver.chrome.options import Options
+from webdriver_manager.chrome import ChromeDriverManager
 
 # don't forget that we don't have links for for items in neonet, when we add to ome scraper
 
 class NeoScraper():
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36'
-    }
 
-    list_objects = []
+    def __init__(self):
+        self.list_objects = []
+        self.options = Options()
+        self.options.add_argument(
+            'user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36')
+        self.options.add_argument('--headless')
+        self.options.add_argument('--no-sandbox')
+        self.headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36'
+        }
+
+
 
 
     def search_ps5(self, url):
-        driver = webdriver.Chrome(service=ChromeService(executable_path='/Users/rostislavohrim/Desktop/Навчання IT/just_studing/chrome_driver/chromedriver'))
+        driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=self.options)
         driver.get(url)
         driver.implicitly_wait(10)
         # button = driver.find_element(By.XPATH, '//*[@id="click"]/div[2]/section[1]/ul/li[2]/div/div[2]/div[1]/ul/li[2]')

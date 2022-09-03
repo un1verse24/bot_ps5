@@ -1,23 +1,35 @@
 from selenium import webdriver
 from bs4 import BeautifulSoup
 from selenium.webdriver.chrome.service import Service as ChromeService
+from selenium.webdriver.chrome.options import Options
+from webdriver_manager.chrome import ChromeDriverManager
+
+
 
 
 class AvansScraper():
 
-    lst_obj = [] # list with all item links on the page
+    def __init__(self):
+
+        self.lst_obj = []
+        self.options = Options()
+        self.options.add_argument(
+            'user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36')
+        self.options.add_argument('--headless')
+        self.options.add_argument('--no-sandbox')
+        self.headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36'
+        }
 
 
     def get_last_page(self, url):
-        # options = webdriver.ChromeOptions()
-        # options.add_argument(
-        #     'user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36')
+        options = webdriver.ChromeOptions()
+        options.add_argument(
+            'user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36')
+
 
         try:
-            driver = webdriver.Chrome(service=ChromeService(
-                executable_path='/Users/rostislavohrim/Desktop/Навчання IT/just_studing/chrome_driver/chromedriver',
-                ))
-
+            driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=self.options)
             driver.get(url=url)
             driver.implicitly_wait(20)
             soup = BeautifulSoup(driver.page_source, 'lxml')
@@ -37,9 +49,7 @@ class AvansScraper():
         # options.add_argument('user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36')
 
         try:
-            driver = webdriver.Chrome(service=ChromeService(
-                executable_path='/Users/rostislavohrim/Desktop/Навчання IT/just_studing/chrome_driver/chromedriver',
-            ))
+            driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=self.options)
 
             driver.get(url=url)
             driver.implicitly_wait(20)
